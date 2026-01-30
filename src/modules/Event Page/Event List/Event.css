@@ -1,0 +1,22 @@
+.rbc-btn-group {
+  @apply dark:bg-zinc-600;
+}
+
+.rbc-off-range-bg {
+  @apply dark:bg-[hsl(240,3.7%,25.9%)];
+}
+.rbc-today {
+  @apply dark:bg-zinc-500;
+}
+
+.rbc-active {
+  @apply dark:bg-white !important;
+}
+
+.rbc-show-more {
+  @apply dark:text-gray-800;
+}
+
+.rbc-calendar {
+  height: calc(100vh - 220px) !important;
+}

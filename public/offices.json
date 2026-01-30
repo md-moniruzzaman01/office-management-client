@@ -1,0 +1,12 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "label": "Softwara",
+      "value": "softwara",
+      "bg_image": ""
+    }
+  ],
+  "success": true,
+  "meta": { "page": 1, "limit": 10, "total": 5 }
+}
