@@ -1,15 +1,7 @@
 import {
-  BadgeCheck,
-  MapPin,
-  Github,
-  Linkedin,
-  Twitter,
-  Mail,
-  Phone,
-  Building2,
+  BadgeCheck
 } from "lucide-react";
 import { Button } from "../../../../components/ui/button";
-import { TabsList, TabsTrigger } from "../../../../components/ui/tabs";
 
 const ProfileMain = () => {
   return (

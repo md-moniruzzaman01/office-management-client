@@ -12,7 +12,7 @@ declare global {
 
 export const initializeSocket = (): Socket => {
   if (!socket) {
-    socket = io("http://localhost:5000", {
+    socket = io("https://office-management-backend-pied.vercel.app", {
       transports: ["websocket", "polling"],
       withCredentials: true,
     });

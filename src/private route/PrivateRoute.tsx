@@ -30,7 +30,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
 
   const unauthorizedRoutes = ["/"];
   const isUnauthorized =
-    !["SUPER_ADMIN", "admin"].includes(userInfo?.role) &&
+    !["SUPER_ADMIN", "ADMIN","EMPLOYEE"].includes(userInfo?.role) &&
     unauthorizedRoutes.some((route) => matchPath(route, location.pathname));
 
   if (isUnauthorized) {

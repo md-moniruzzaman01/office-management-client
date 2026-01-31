@@ -25,8 +25,7 @@ import { useGetBranchesQuery } from "../../../redux/features/api/Branches/branch
 import { useGetPowersQuery } from "../../../redux/features/api/Power/power";
 import { useNavigate } from "react-router-dom";
 import PhotoUpload from "../../../common/Photo Upload/PhotoUpload";
-import { uploadPhoto } from "../../../common/Photo Upload/helpers/handlePhotoUpload";
-import swal from "sweetalert";
+
 
 const CreateUserForm: React.FC = () => {
   const [formData, setFormData] = useState(initialData);
@@ -59,7 +58,7 @@ const CreateUserForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    let profileImage: any;
+    // let profileImage: any;
     // setPhotoUploading(true);
     // if (file) {
     //   profileImage = await uploadPhoto(file.target.files[0], "users");
@@ -86,7 +85,6 @@ const CreateUserForm: React.FC = () => {
       fullData,
     });
     setPhotoUploading(false);
-
     const isSwalTrue = showSwal(result);
     if (isSwalTrue) {
       setFormData(initialData);

@@ -1,4 +1,3 @@
-import { Briefcase, Users } from "lucide-react";
 import { Header } from "./partials/Header/Header";
 import TotalEmployee from "./partials/Total Employee/TotalEmployee";
 import Performance from "./partials/Employee Performance/Performance";

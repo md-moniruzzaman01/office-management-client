@@ -259,7 +259,7 @@ const ChatApp = () => {
               <div
                 key={user.id}
                 onClick={() => setActiveUser(user)}
-                className={`flex items-center px-4 py-3 cursor-pointer transition-all duration-500 ${
+                className={` text-gray-800 dark:text-gray-200 flex items-center px-4 py-3 cursor-pointer transition-all duration-500 ${
                   activeUser?.id === user?.id ? "text-blue underline pl-7" : ""
                 }`}
               >
