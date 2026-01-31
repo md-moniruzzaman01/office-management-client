@@ -7,7 +7,7 @@ import {
 } from "../../redux/features/api/Users/user";
 import LoadingPage from "../../common/LoadingPage/LoadingPage";
 import { User } from "../../shared/config/types";
-import { demoUserLogo } from "../../shared/config/constaints";
+import { authKey, demoUserLogo } from "../../shared/config/constaints";
 import { Socket } from "socket.io-client";
 import { getUser } from "../../shared/Helpers/jwt";
 import { useGetChatsRoomQuery } from "../../redux/features/api/Chat/chat";
@@ -22,6 +22,7 @@ import {
   sendMessage,
 } from "../../Socket/socket-client";
 import { SERVER_URL } from "../../shared/config/secret";
+import { getFromLocalStorage } from "../../shared/Helpers/local_storage";
 
 interface Message {
   id: number;
@@ -44,15 +45,15 @@ const ChatApp = () => {
   const user: any = getUser();
   const { data: singleUser } = useGetSingleUserQuery(
     { id: user?.id },
-    { skip: !user?.id }
+    { skip: !user?.id },
   );
-
+  const token = getFromLocalStorage(authKey);
   const { data: chatRoomData } = useGetChatsRoomQuery(
     {
       senderId: singleUser?.data?.id,
       receiverId: activeUser?.id,
     },
-    { skip: !activeUser?.id || !singleUser?.data?.id }
+    { skip: !activeUser?.id || !singleUser?.data?.id },
   );
 
   // Initialize socket connection and current user
@@ -67,7 +68,7 @@ const ChatApp = () => {
   useEffect(() => {
     if (users?.data?.length && !activeUser) {
       const firstOtherUser = users?.data?.find(
-        (user: User) => user?.id !== singleUser?.data?.id
+        (user: User) => user?.id !== singleUser?.data?.id,
       );
       setActiveUser(firstOtherUser);
     }
@@ -87,9 +88,15 @@ const ChatApp = () => {
       try {
         joinChatRoom(chatRoomData?.data?.id);
         const response = await fetch(
-          `${SERVER_URL}/chats/room/${chatRoomData?.data?.id}`
+          `${SERVER_URL}/chats/room/${chatRoomData.data.id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              ...(token && { Authorization: token }),
+            },
+          },
         );
-
         // Check if the response is successful
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -114,7 +121,7 @@ const ChatApp = () => {
               }),
               senderId: msg.senderId,
               receiverId: msg.receiverId,
-            }))
+            })),
           );
         }
       } catch (error) {
@@ -130,23 +137,26 @@ const ChatApp = () => {
     if (!socket) return;
 
     socket.on("newMessage", (message: any) => {
-      const isMine = message.senderId === singleUser?.data?.id;
-      const newMsg: Message = {
-        id: message.id,
-        text: message.content,
-        sender: isMine ? "user" : "bot",
-        timestamp: new Date(message.createdAt || Date.now()).toLocaleTimeString(
-          [],
-          {
+      setMessages((prev) => {
+        // Prevent duplicate messages if the ID already exists
+        if (prev.find((m) => m.id === message.id)) return prev;
+
+        const isMine = message.senderId === singleUser?.data?.id;
+        const newMsg: Message = {
+          id: message.id,
+          text: message.content,
+          sender: isMine ? "user" : "bot",
+          timestamp: new Date(
+            message.createdAt || Date.now(),
+          ).toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
-          }
-        ),
-        senderId: message.senderId,
-        receiverId: message.receiverId,
-      };
-
-      setMessages((prev) => [...prev, newMsg]);
+          }),
+          senderId: message.senderId,
+          receiverId: message.receiverId,
+        };
+        return [...prev, newMsg];
+      });
     });
 
     socket.on("userTyping", (user: number) => {
@@ -169,14 +179,14 @@ const ChatApp = () => {
                 ...msg,
                 text: updatedMessage.content,
                 timestamp: new Date(
-                  updatedMessage.updatedAt
+                  updatedMessage.updatedAt,
                 ).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
                 }),
               }
-            : msg
-        )
+            : msg,
+        ),
       );
     });
 
